@@ -43,7 +43,8 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
   gap: var(--space-md);
   padding-block: 0.75rem;
 }
-.v2-header { overflow-x: clip; }
+/* Endast desktop: Safari klipper annars även nedåt och gömmer mobilmenyn */
+@media (min-width: 861px) { .v2-header { overflow-x: clip; } }
 /* "Boka tid" glider in från höger när hero-knappen scrollats förbi.
    På desktop ligger menylänkarna först längst till höger (där knappen ska landa)
    och glider åt vänster i takt med att knappen kommer in. --cta-shift sätts av js/main.js. */
@@ -579,7 +580,6 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
   .v2-header__cta { display: none; }
   .nav-toggle { margin-left: auto; }
   .v2-nav {
-    display: none;
     order: 3;
     margin-left: 0;
     flex-direction: column;
@@ -588,7 +588,6 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
     width: 100%;
     padding-bottom: var(--space-sm);
   }
-  .v2-nav.is-open { display: flex; }
   .v2-nav__link { border-top: 1px solid var(--color-border); }
   .v2-nav .v2-nav__cta { display: inline-flex; justify-content: center; margin-top: var(--space-sm); min-height: 52px; }
 }
@@ -763,10 +762,27 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
     border-bottom: 1px solid var(--color-border);
     box-shadow: 0 14px 24px rgba(27, 28, 26, 0.18);
     max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
     overflow-y: auto;
+    /* Stängd: osynlig men kvar i layouten, så att den kan rulla ut mjukt */
+    visibility: hidden;
+    opacity: 0;
+    clip-path: inset(0 -30px 100% -30px);
+    transform: translateY(-10px);
+    transition: clip-path 0.28s ease, opacity 0.22s ease, transform 0.28s ease, visibility 0s linear 0.28s;
   }
-  .v2-header:has(.v2-nav.is-open)::after {
+  .v2-nav.is-open {
+    visibility: visible;
+    opacity: 1;
+    clip-path: inset(0 -30px -40px -30px);
+    transform: none;
+    transition: clip-path 0.28s ease, opacity 0.22s ease, transform 0.28s ease, visibility 0s;
+  }
+  .v2-header::after {
     content: "";
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
     position: absolute;
     top: 100%;
     left: 0;
@@ -775,4 +791,8 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
     height: 100vh;
     background: rgba(27, 28, 26, 0.35);
   }
+  .v2-header:has(.v2-nav.is-open)::after { opacity: 1; pointer-events: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v2-nav, .v2-nav.is-open, .v2-header::after { transition: none !important; }
 }
