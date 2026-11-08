@@ -8,10 +8,23 @@ if (yearEl) {
 const navToggle = document.querySelector(".nav-toggle");
 const nav = document.getElementById("nav");
 if (navToggle && nav) {
-  navToggle.addEventListener("click", () => {
-    const open = nav.classList.toggle("is-open");
+  const setNav = (open) => {
+    nav.classList.toggle("is-open", open);
     navToggle.setAttribute("aria-expanded", String(open));
+  };
+  navToggle.addEventListener("click", () => setNav(!nav.classList.contains("is-open")));
+  // Stäng menyn: Esc, klick utanför, länkklick och när fönstret blir brett
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && nav.classList.contains("is-open")) {
+      setNav(false);
+      navToggle.focus();
+    }
   });
+  document.addEventListener("click", (event) => {
+    if (nav.classList.contains("is-open") && !nav.contains(event.target) && !navToggle.contains(event.target)) setNav(false);
+  });
+  nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setNav(false)));
+  window.matchMedia("(min-width: 861px)").addEventListener("change", (e) => { if (e.matches) setNav(false); });
 }
 
 // Utfällbar lista (endast synlig på smala skärmar)
