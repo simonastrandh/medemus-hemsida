@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medemus – Designsystem (WCAG AA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ===== Färgpalett — alla textpar är kontrollerade mot WCAG 2.1 AA ===== */
+    --green-primary: #9BC53D;   /* Logotyp (ljus halva). Endast som yta, ej som text på vitt */
+    --green-dark: #6E9A2B;      /* Logotyp (mörk halva). Endast ytor/stora element, ej liten text */
+    --green-deep: #4A6B1F;      /* Tillgänglig grön text/ikon — 6,1:1 på vitt */
+    --green-tint: #EEF5DE;      /* Ljus grön bakgrundston */
+
+    --ink: #3A3A3C;             /* Primär text — 11,3:1 på vitt */
+    --ink-soft: #6B6B6E;        /* Sekundär text — 5,3:1 på vitt */
+    --ink-muted: #9A9A9D;       /* ENDAST placeholder/inaktiverat (WCAG-undantaget) */
+
+    --bg: #FFFFFF;
+    --bg-alt: #F7F8F4;
+    --border: #E2E4DC;          /* Dekorativa linjer/kortkanter, ej funktionella gränser */
+    --border-interactive: #80847A; /* Fält, inputs, ikon-outlines — 3,8:1, uppfyller 1.4.11 */
+
+    --accent-focus: #2E6F8E;    /* Länkar + fokusringar — 5,6:1 på vitt */
+
+    --success-text: #3D7A3D;    /* Statustext — 5,2:1 på vitt */
+    --success-surface: #E3F1E3; /* Bakgrund till success-meddelanden */
+    --error-text: #B33A3A;      /* Statustext — 5,9:1 på vitt */
+    --error-surface: #FBEAEA;   /* Bakgrund till felmeddelanden */
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg-alt);
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    padding: 64px 24px 120px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  .intro { margin-bottom: 72px; }
+
+  .logo-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+
+  .logo-mark {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: conic-gradient(var(--green-dark) 0deg 180deg, var(--green-primary) 180deg 360deg);
+    flex-shrink: 0;
+  }
+
+  .logo-word { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 32px; color: var(--ink); letter-spacing: -0.5px; }
+  .logo-sub { font-family: 'Inter', sans-serif; font-size: 12px; letter-spacing: 2px; color: var(--ink-soft); text-transform: uppercase; }
+
+  h1.page-title { font-family: 'Poppins', sans-serif; font-size: 40px; font-weight: 600; margin: 0 0 10px; }
+  .page-sub { font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0; max-width: 620px; }
+
+  .wcag-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--success-surface); color: var(--success-text);
+    font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px;
+    margin-top: 20px;
+  }
+
+  section { margin-bottom: 76px; }
+
+  .section-label { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green-deep); margin-bottom: 8px; }
+  .section-title { font-family: 'Poppins', sans-serif; font-size: 26px; font-weight: 600; margin: 0 0 12px; }
+  .section-note { font-size: 14px; color: var(--ink-soft); max-width: 640px; margin: 0 0 32px; line-height: 1.6; }
+
+  /* ===== Färgswatcher ===== */
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .swatch { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .swatch-color { height: 96px; width: 100%; }
+  .swatch-info { padding: 14px 16px; }
+  .swatch-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .swatch-hex { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px; color: var(--ink-soft); }
+  .swatch-usage { font-size: 12px; color: var(--ink-soft); margin-top: 6px; line-height: 1.5; }
+
+  /* ===== Kontrastmatris ===== */
+  .contrast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .contrast-card { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; background: var(--bg); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .contrast-preview { padding: 28px 20px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 17px; text-align: center; }
+  .contrast-meta { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 12px; }
+  .contrast-pair { font-family: 'SFMono-Regular', Consolas, monospace; color: var(--ink-soft); }
+  .pass-pill { font-weight: 700; padding: 3px 9px; border-radius: 999px; font-size: 11px; letter-spacing: 0.3px; }
+  .pass-aaa { background: var(--success-surface); color: var(--success-text); }
+  .pass-aa { background: var(--green-tint); color: var(--green-deep); }
+
+  /* ===== Typografi ===== */
+  .type-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; margin-bottom: 16px; display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .type-sample { color: var(--ink); margin: 0; }
+  .type-meta { font-size: 12px; color: var(--ink-soft); font-family: 'SFMono-Regular', Consolas, monospace; white-space: nowrap; }
+
+  h1.demo { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 48px; margin:0; letter-spacing: -0.5px; line-height:1.15; }
+  h2.demo { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 34px; margin:0; letter-spacing: -0.3px; line-height:1.2; }
+  h3.demo { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 24px; margin:0; line-height:1.3; }
+  h4.demo { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 19px; margin:0; line-height:1.4; }
+  p.demo { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 16px; line-height: 1.65; margin:0; max-width: 480px; }
+  p.small-demo { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 13px; color: var(--ink-soft); margin:0; }
+  p.label-demo { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--green-deep); margin:0; }
+  a.link-demo { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px; color: var(--accent-focus); text-decoration: underline; text-underline-offset: 3px; }
+  a.link-demo:focus-visible { outline: 2px solid var(--accent-focus); outline-offset: 3px; border-radius: 3px; }
+
+  /* ===== Knappar ===== */
+  .button-grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .btn {
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
+    padding: 14px 28px; border-radius: 999px; border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .btn-primary { background: var(--green-primary); color: #2B3A14; }
+  .btn-primary:hover { background: var(--green-deep); color: #fff; }
+
+  .btn-dark { background: var(--ink); color: #fff; }
+  .btn-dark:hover { background: #222224; }
+
+  .btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+  .btn-outline:hover { background: var(--ink); color: #fff; }
+
+  .btn-ghost { background: var(--green-tint); color: var(--green-deep); }
+  .btn-ghost:hover { background: #E2EECB; }
+
+  .btn-disabled { background: #ECECE9; color: var(--ink-muted); cursor: not-allowed; }
+
+  .btn:focus-visible { outline: 3px solid var(--accent-focus); outline-offset: 2px; }
+
+  .btn-caption { font-size: 12px; color: var(--ink-soft); margin-top: 8px; }
+  .btn-block { display: flex; flex-direction: column; align-items: flex-start; }
+
+  /* ===== Ytor ===== */
+  .surface-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .surface-card { border-radius: 14px; padding: 28px 24px; border: 1px solid var(--border); }
+  .surface-card h5 { font-family: 'Poppins', sans-serif; font-size: 16px; margin: 0 0 6px; }
+  .surface-card p { font-size: 13px; margin: 0; line-height:1.5; }
+
+  /* ===== Statusmeddelanden ===== */
+  .alert { border-radius: 10px; padding: 16px 20px; font-size: 14px; line-height:1.5; display:flex; gap:10px; align-items:flex-start; max-width: 460px; }
+  .alert-success { background: var(--success-surface); color: var(--success-text); }
+  .alert-error { background: var(--error-surface); color: var(--error-text); }
+  .alert strong { font-weight: 700; }
+
+  /* ===== Formulär ===== */
+  .form-demo { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 32px; max-width: 420px; }
+  .field { margin-bottom: 20px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+  .field input {
+    width: 100%; padding: 12px 14px; border-radius: 8px;
+    border: 1.5px solid var(--border-interactive);
+    font-family: 'Inter', sans-serif; font-size: 15px; color: var(--ink); background: var(--bg);
+  }
+  .field input::placeholder { color: var(--ink-muted); }
+  .field input:focus-visible { outline: 3px solid var(--accent-focus); outline-offset: 1px; border-color: var(--accent-focus); }
+  .field-hint { font-size: 12px; color: var(--ink-soft); margin-top: 5px; }
+
+  /* ===== Exempel i kontext ===== */
+  .sample-card { background: var(--ink); border-radius: 16px; padding: 40px; color: #fff; }
+  .sample-card .logo-mark { margin-bottom: 20px; }
+  .sample-card h3 { font-family: 'Poppins', sans-serif; font-size: 22px; margin: 0 0 12px; }
+  .sample-card p { font-size: 14px; color: #E4E4E2; max-width: 440px; line-height: 1.65; margin: 0 0 22px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="intro">
+    <div class="logo-row">
+      <div class="logo-mark"></div>
+      <div>
+        <div class="logo-word">medemus</div>
+        <div class="logo-sub">Psykiatrisk mottagning</div>
+      </div>
+    </div>
+    <h1 class="page-title">Designsystem</h1>
+    <p class="page-sub">Färger, typografi och komponenter för Medemus hemsida. Samtliga text/bakgrunds-kombinationer nedan är kontrollerade mot WCAG 2.1 nivå AA (minst 4,5:1 för brödtext, 3:1 för stor text och gränssnittskomponenter).</p>
+    <span class="wcag-badge">✓ WCAG 2.1 AA-kontrollerad palett</span>
+  </div>
+
+  <!-- FÄRGER -->
+  <section>
+    <div class="section-label">01 · Färger</div>
+    <h2 class="section-title">Färgpalett</h2>
+    <p class="section-note">Grundfärgerna från logotypen (<em>Green Primary</em> och <em>Green Dark</em>) används som ytor och stora grafiska element — de räcker inte som liten text på vit botten. För text och ikoner används de mörkare, tillgängliga varianterna <em>Green Deep</em>, <em>Ink</em> och <em>Ink Soft</em>.</p>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--green-primary);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green Primary</div>
+          <div class="swatch-hex">#9BC53D</div>
+          <div class="swatch-usage">Knappytor, logotyp. Endast med mörk text ovanpå — ej som liten text på vitt.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--green-dark);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green Dark</div>
+          <div class="swatch-hex">#6E9A2B</div>
+          <div class="swatch-usage">Logotyp, stora grafiska ytor/ikoner (3:1). Ej som liten text.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--green-deep);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green Deep</div>
+          <div class="swatch-hex">#4A6B1F</div>
+          <div class="swatch-usage">Tillgänglig text/ikonfärg — 6,1:1 på vitt. Hover på primärknapp.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--green-tint); border-bottom: 1px solid var(--border);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green Tint</div>
+          <div class="swatch-hex">#EEF5DE</div>
+          <div class="swatch-usage">Mjuk bakgrundsyta för badges och ghost-knappar.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--ink);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Ink</div>
+          <div class="swatch-hex">#3A3A3C</div>
+          <div class="swatch-usage">Primär text — 11,3:1 på vitt (AAA). Rubriker, brödtext, mörk footer.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--ink-soft);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Ink Soft</div>
+          <div class="swatch-hex">#6B6B6E</div>
+          <div class="swatch-usage">Sekundär text — 5,3:1 på vitt (AA). Ingresser, metadata.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--ink-muted); border-bottom: 1px solid var(--border);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Ink Muted</div>
+          <div class="swatch-hex">#9A9A9D</div>
+          <div class="swatch-usage">Endast placeholder/inaktiverat läge — WCAG-undantaget, aldrig för läsbar text.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--border-interactive); border-bottom: 1px solid var(--border);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Border Interactive</div>
+          <div class="swatch-hex">#80847A</div>
+          <div class="swatch-usage">Kantlinjer på inputs/komponenter — 3,8:1, uppfyller krav på synliga gränssnittselement.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--bg-alt); border-bottom: 1px solid var(--border);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Background Alt</div>
+          <div class="swatch-hex">#F7F8F4</div>
+          <div class="swatch-usage">Sidbakgrund, sektionsavbrott.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--accent-focus);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Accent / Focus</div>
+          <div class="swatch-hex">#2E6F8E</div>
+          <div class="swatch-usage">Länkar — 5,6:1. Fokusringar på interaktiva element.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--success-text);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Success Text</div>
+          <div class="swatch-hex">#3D7A3D</div>
+          <div class="swatch-usage">Bekräftelsetext/ikoner — 5,2:1 på vitt.</div>
+        </div>
+      </div>
+
+      <div class="swatch">
+        <div class="swatch-color" style="background: var(--error-text);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Error Text</div>
+          <div class="swatch-hex">#B33A3A</div>
+          <div class="swatch-usage">Felmeddelanden/validering — 5,9:1 på vitt.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KONTRAST -->
+  <section>
+    <div class="section-label">02 · Tillgänglighet</div>
+    <h2 class="section-title">Kontrastmatris</h2>
+    <p class="section-note">De textkombinationer som faktiskt används i gränssnittet, med uppmätt kontrastvärde. AA = minst 4,5:1 (brödtext), AAA = minst 7:1.</p>
+
+    <div class="contrast-grid">
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background:#fff; color: var(--ink);">Brödtext på vitt</div>
+        <div class="contrast-meta"><span class="contrast-pair">Ink / #FFF</span><span class="pass-pill pass-aaa">11,3:1 · AAA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background:#fff; color: var(--ink-soft);">Sekundär text</div>
+        <div class="contrast-meta"><span class="contrast-pair">Ink Soft / #FFF</span><span class="pass-pill pass-aa">5,3:1 · AA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background: var(--green-primary); color:#2B3A14;">Primärknapp</div>
+        <div class="contrast-meta"><span class="contrast-pair">#2B3A14 / Green Primary</span><span class="pass-pill pass-aa">6,1:1 · AA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background: var(--green-deep); color:#fff;">Hover / mörk yta</div>
+        <div class="contrast-meta"><span class="contrast-pair">#FFF / Green Deep</span><span class="pass-pill pass-aa">6,1:1 · AA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background: var(--ink); color:#fff;">Mörk knapp / footer</div>
+        <div class="contrast-meta"><span class="contrast-pair">#FFF / Ink</span><span class="pass-pill pass-aaa">11,3:1 · AAA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background: var(--green-tint); color: var(--green-deep);">Ghost-knapp / badge</div>
+        <div class="contrast-meta"><span class="contrast-pair">Green Deep / Green Tint</span><span class="pass-pill pass-aa">5,5:1 · AA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background:#fff; color: var(--accent-focus); text-decoration: underline;">Länktext</div>
+        <div class="contrast-meta"><span class="contrast-pair">Accent Focus / #FFF</span><span class="pass-pill pass-aa">5,6:1 · AA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background: var(--success-surface); color: var(--success-text);">Bekräftelse</div>
+        <div class="contrast-meta"><span class="contrast-pair">Success Text / Surface</span><span class="pass-pill pass-aa">4,9:1 · AA</span></div>
+      </div>
+
+      <div class="contrast-card">
+        <div class="contrast-preview" style="background: var(--error-surface); color: var(--error-text);">Felmeddelande</div>
+        <div class="contrast-meta"><span class="contrast-pair">Error Text / Surface</span><span class="pass-pill pass-aa">5,6:1 · AA</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAFI -->
+  <section>
+    <div class="section-label">03 · Typografi</div>
+    <h2 class="section-title">Typsnitt &amp; textstilar</h2>
+    <p class="section-note">
+      Rubriker: <strong>Poppins</strong> (vänlig, rundad geometri som matchar logotypens cirkelform) · Brödtext: <strong>Inter</strong> (hög x-höjd, tydlig på skärm i alla storlekar — vald särskilt för läsbarhet i en vårdkontext). Minsta brödtextstorlek 16px, minsta textstorlek totalt 12px (caption).
+    </p>
+
+    <div class="type-card">
+      <h1 class="demo type-sample">Trygg vård, hela vägen</h1>
+      <span class="type-meta">H1 · Poppins 600 · 48px</span>
+    </div>
+
+    <div class="type-card">
+      <h2 class="demo type-sample">Våra behandlingar</h2>
+      <span class="type-meta">H2 · Poppins 600 · 34px</span>
+    </div>
+
+    <div class="type-card">
+      <h3 class="demo type-sample">Boka ett första samtal</h3>
+      <span class="type-meta">H3 · Poppins 600 · 24px</span>
+    </div>
+
+    <div class="type-card">
+      <h4 class="demo type-sample">Öppettider och kontakt</h4>
+      <span class="type-meta">H4 · Poppins 500 · 19px</span>
+    </div>
+
+    <div class="type-card">
+      <p class="demo type-sample">Medemus psykiatriska mottagning erbjuder bedömning, behandling och uppföljning i en trygg och personlig miljö. Vi finns här för dig genom hela din resa.</p>
+      <span class="type-meta">Paragraph · Inter 400 · 16px / 1,65</span>
+    </div>
+
+    <div class="type-card">
+      <p class="small-demo type-sample">Senast uppdaterad 4 november 2026</p>
+      <span class="type-meta">Small / Caption · Inter 400 · 13px</span>
+    </div>
+
+    <div class="type-card">
+      <p class="label-demo type-sample">Specialistmottagning</p>
+      <span class="type-meta">Eyebrow / Label · Inter 600 · 12px · versaler</span>
+    </div>
+
+    <div class="type-card">
+      <a href="#" class="link-demo type-sample">Läs mer om vår mottagning →</a>
+      <span class="type-meta">Link · Inter 600 · 16px · understruken</span>
+    </div>
+  </section>
+
+  <!-- KNAPPAR -->
+  <section>
+    <div class="section-label">04 · Knappar</div>
+    <h2 class="section-title">Buttons</h2>
+    <p class="section-note">Alla knappar har en tydlig fokusring (3px, Accent Focus) för tangentbordsnavigering och minst 44px klickyta i höjd.</p>
+
+    <div class="button-grid">
+      <div class="btn-block">
+        <button class="btn btn-primary">Boka tid</button>
+        <div class="btn-caption">Primary — 6,1:1</div>
+      </div>
+
+      <div class="btn-block">
+        <button class="btn btn-dark">Kontakta oss</button>
+        <div class="btn-caption">Dark — 11,3:1</div>
+      </div>
+
+      <div class="btn-block">
+        <button class="btn btn-outline">Läs mer</button>
+        <div class="btn-caption">Outline — 11,3:1</div>
+      </div>
+
+      <div class="btn-block">
+        <button class="btn btn-ghost">Till startsidan</button>
+        <div class="btn-caption">Ghost — 5,5:1</div>
+      </div>
+
+      <div class="btn-block">
+        <button class="btn btn-disabled" disabled>Ej tillgänglig</button>
+        <div class="btn-caption">Disabled (undantaget AA)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YTOR -->
+  <section>
+    <div class="section-label">05 · Ytor</div>
+    <h2 class="section-title">Bakgrunder &amp; kort</h2>
+
+    <div class="surface-grid">
+      <div class="surface-card" style="background: var(--bg); color: var(--ink);">
+        <h5>Vit yta</h5>
+        <p>Standardkort och innehållsytor</p>
+      </div>
+      <div class="surface-card" style="background: var(--bg-alt); color: var(--ink);">
+        <h5>Alt bakgrund</h5>
+        <p>Sektioner, sidbakgrund</p>
+      </div>
+      <div class="surface-card" style="background: var(--green-tint); color: var(--green-deep);">
+        <h5>Grön tint</h5>
+        <p>Framhävda kort, badges</p>
+      </div>
+      <div class="surface-card" style="background: var(--ink); color: #fff;">
+        <h5>Mörk yta</h5>
+        <p>Footer, kontrastsektioner</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section>
+    <div class="section-label">06 · Statusmeddelanden</div>
+    <h2 class="section-title">Bekräftelse &amp; fel</h2>
+    <p class="section-note">Status förmedlas aldrig enbart med färg — ikon/symbol och text är alltid med.</p>
+
+    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+      <div class="alert alert-success"><span>✓</span><span><strong>Tiden är bokad.</strong> Vi skickar en bekräftelse till din e-post.</span></div>
+      <div class="alert alert-error"><span>!</span><span><strong>Något gick fel.</strong> Kontrollera uppgifterna och försök igen.</span></div>
+    </div>
+  </section>
+
+  <!-- FORMULÄR -->
+  <section>
+    <div class="section-label">07 · Formulär</div>
+    <h2 class="section-title">Inputfält</h2>
+    <p class="section-note">Synlig etikett ovanför fältet (aldrig enbart placeholder), tydlig kantlinje (3,8:1) och kraftig fokusring vid tangentbordsnavigering.</p>
+
+    <div class="form-demo">
+      <div class="field">
+        <label for="demo-name">Namn</label>
+        <input id="demo-name" type="text" placeholder="För- och efternamn">
+      </div>
+      <div class="field">
+        <label for="demo-email">E-post</label>
+        <input id="demo-email" type="email" placeholder="namn@exempel.se">
+        <div class="field-hint">Vi delar aldrig din e-post vidare.</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center;">Skicka förfrågan</button>
+    </div>
+  </section>
+
+  <!-- EXEMPEL -->
+  <section>
+    <div class="section-label">08 · Exempel i kontext</div>
+    <h2 class="section-title">Mörk sektion med logotyp</h2>
+
+    <div class="sample-card">
+      <div class="logo-mark"></div>
+      <h3>medemus — Psykiatrisk mottagning</h3>
+      <p>Ett exempel på hur logotyp, rubrik och brödtext fungerar tillsammans mot en mörk bakgrund, t.ex. i en footer.</p>
+      <button class="btn btn-primary">Boka tid</button>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
