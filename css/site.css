@@ -782,7 +782,8 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
     content: "";
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.25s ease;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0s linear 0.25s;
     position: absolute;
     top: 100%;
     left: 0;
@@ -791,7 +792,7 @@ html { scroll-padding-top: 96px; scroll-behavior: smooth; }
     height: 100vh;
     background: rgba(27, 28, 26, 0.35);
   }
-  .v2-header:has(.v2-nav.is-open)::after { opacity: 1; pointer-events: auto; }
+  .v2-header:has(.v2-nav.is-open)::after { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 0.25s ease, visibility 0s; }
 }
 @media (prefers-reduced-motion: reduce) {
   .v2-nav, .v2-nav.is-open, .v2-header::after { transition: none !important; }
