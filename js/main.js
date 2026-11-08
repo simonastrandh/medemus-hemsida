@@ -12,7 +12,10 @@ if (navToggle && nav) {
     nav.classList.toggle("is-open", open);
     navToggle.setAttribute("aria-expanded", String(open));
   };
-  navToggle.addEventListener("click", () => setNav(!nav.classList.contains("is-open")));
+  navToggle.addEventListener("click", (event) => {
+    event.stopPropagation(); // klicket ska aldrig nå dokumentets "klick utanför"-lyssnare
+    setNav(!nav.classList.contains("is-open"));
+  });
   // Stäng menyn: Esc, klick utanför, länkklick och när fönstret blir brett
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && nav.classList.contains("is-open")) {
@@ -21,7 +24,10 @@ if (navToggle && nav) {
     }
   });
   document.addEventListener("click", (event) => {
-    if (nav.classList.contains("is-open") && !nav.contains(event.target) && !navToggle.contains(event.target)) setNav(false);
+    if (!nav.classList.contains("is-open")) return;
+    const path = event.composedPath ? event.composedPath() : [];
+    if (path.includes(nav) || path.includes(navToggle)) return;
+    setNav(false);
   });
   nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setNav(false)));
   window.matchMedia("(min-width: 861px)").addEventListener("change", (e) => { if (e.matches) setNav(false); });
